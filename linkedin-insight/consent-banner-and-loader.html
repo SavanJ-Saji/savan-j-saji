@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Consent-aware LinkedIn Insight</title>
+  <style>
+    #consent-banner {
+      position: fixed; left: 0; right: 0; bottom: 0;
+      background: #111; color: #fff; padding: 12px;
+      display: flex; gap: 12px; align-items: center; justify-content: center;
+      z-index: 9999; font-family: Arial, sans-serif;
+    }
+    #consent-banner button { padding: 8px 12px; border: none; cursor: pointer; }
+    #consent-banner .accept { background: #0a66c2; color: #fff; }
+    #consent-banner .decline { background: #777; color: #fff; }
+  </style>
+</head>
+<body>
+  <div id="consent-banner" aria-live="polite" hidden>
+    We use analytics to improve the site. Do you accept LinkedIn tracking?
+    <button class="accept" id="accept-btn">Accept</button>
+    <button class="decline" id="decline-btn">Decline</button>
+  </div>
+
+  <script>
+    // Simple localStorage-based consent store
+    (function() {
+      var PARTNER_ID = '8362812';
+      var CONSENT_KEY = 'li_insight_consent'; // 'granted' | 'denied'
+
+      function showBanner(show) {
+        var b = document.getElementById('consent-banner');
+        if (!b) return;
+        b.hidden = !show;
+      }
+
+      function getConsent() {
+        return localStorage.getItem(CONSENT_KEY);
+      }
+
+      function setConsent(value) {
+        localStorage.setItem(CONSENT_KEY, value);
+      }
+
+      function loadLinkedIn(partnerId) {
+        if (!partnerId) return;
+        if (document.querySelector('script[data-lk="insight"]')) return;
+        window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+        if (window._linkedin_data_partner_ids.indexOf(partnerId) === -1) {
+          window._linkedin_data_partner_ids.push(partnerId);
+        }
+        if (!window.lintrk) {
+          window.lintrk = function(a,b){ (window.lintrk.q = window.lintrk.q || []).push([a,b]);};
+          window.lintrk.q = window.lintrk.q || [];
+        }
+        var s = document.getElementsByTagName('script')[0];
+        var b = document.createElement('script');
+        b.type = 'text/javascript';
+        b.async = true;
+        b.src = 'https://snap.licdn.com/li.lms-analytics/insight.min.js';
+        b.setAttribute('data-lk','insight');
+        s.parentNode.insertBefore(b, s);
+        // noscript fallback appended server-side is preferred; if needed, append one:
+        var nsId = 'li-noscript-' + partnerId;
+        if (!document.getElementById(nsId)) {
+          var noscript = document.createElement('noscript');
+          noscript.id = nsId;
+          noscript.innerHTML = '<img height="1" width="1" style="display:none" alt="" src="https://px.ads.linkedin.com/collect/?pid=' + encodeURIComponent(partnerId) + '&fmt=gif" />';
+          document.body.appendChild(noscript);
+        }
+      }
+
+      // init
+      var consent = getConsent();
+      if (consent === 'granted') {
+        // immediate load
+        loadLinkedIn(PARTNER_ID);
+        showBanner(false);
+      } else if (consent === 'denied') {
+        showBanner(false);
+      } else {
+        // first time: show banner
+        showBanner(true);
+      }
+
+      // wiring buttons
+      document.addEventListener('click', function(e) {
+        if (!e.target) return;
+        if (e.target.id === 'accept-btn') {
+          setConsent('granted');
+          loadLinkedIn(PARTNER_ID);
+          showBanner(false);
+        } else if (e.target.id === 'decline-btn') {
+          setConsent('denied');
+          showBanner(false);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

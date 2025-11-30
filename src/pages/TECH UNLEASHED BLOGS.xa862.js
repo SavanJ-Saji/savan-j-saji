@@ -2,13 +2,7 @@
 // “Hello, World!” Example: https://learn-code.wix.com/en/article/hello-world
 
 $w.onReady(function () {
-    // Write your JavaScript here
-
-    // To select an element by ID use: $w('#elementID')
-
-    // Click 'Preview' to run your code
-});
-<script type="text/javascript">
+    <script type="text/javascript">
 _linkedin_partner_id = "8362812";
 window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
 window._linkedin_data_partner_ids.push(_linkedin_partner_id);
@@ -25,3 +19,9 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=8362812&fmt=gif" />
 </noscript>
+    // Write your JavaScript here
+
+    // To select an element by ID use: $w('#elementID')
+
+    // Click 'Preview' to run your code
+});

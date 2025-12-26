@@ -32,8 +32,9 @@ $w.onReady(function () {
       ns.innerHTML = '<img height="1" width="1" style="display:none" alt="" src="https://px.ads.linkedin.com/collect/?pid=' + encodeURIComponent(PARTNER_ID) + '&fmt=gif" />';
       document.body.appendChild(ns);
     }
+    linkedin-site-verification=0cc1d57a-95cd-4fc8-b9e9-44e063271599
   })();
-
+  
   // Write your JavaScript here
 
   // To select an element by ID use: $w('#elementID')
